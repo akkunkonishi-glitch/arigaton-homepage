@@ -132,8 +132,17 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
           <div class="helper">ご希望日に合わせて、直前の火曜・木曜を目安に発送します。地域や交通・天候などにより、ご希望日に沿えない場合があります。</div>
         </div>
         <div class="field">
-          <label for="shippingRequest">配達の希望</label>
-          <input id="shippingRequest" name="shippingRequest" placeholder="例：時間指定なし、午前中希望 など">
+          <label for="shippingRequest">希望時間帯</label>
+          <select id="shippingRequest" name="shippingRequest">
+            <option value="">指定なし</option>
+            <option value="午前中（8〜12時）">午前中（8〜12時）</option>
+            <option value="12〜14時">12〜14時</option>
+            <option value="14〜16時">14〜16時</option>
+            <option value="16〜18時">16〜18時</option>
+            <option value="18〜20時">18〜20時</option>
+            <option value="18〜21時">18〜21時</option>
+            <option value="19〜21時">19〜21時</option>
+          </select>
         </div>
         <div class="field">
           <label for="postal">郵便番号<span class="required">必須</span></label>
@@ -388,7 +397,7 @@ function rowsFor(method){
     rows.push(['お支払い目安', fee===null ? yen(total)+'＋代引き手数料＋送料' : yen(total+fee)+'＋送料']);
   }
   if(method === '佐川急便（代引き）'){
-    rows.push(['郵便番号', value('postal')],['お届け先', value('shippingAddress')],['お届け希望日', value('deliveryPreferredDate') || '指定なし'],['配達の希望', value('shippingRequest') || 'なし']);
+    rows.push(['郵便番号', value('postal')],['お届け先', value('shippingAddress')],['お届け希望日', value('deliveryPreferredDate') || '指定なし'],['希望時間帯', value('shippingRequest') || '指定なし']);
   }else if(method === 'ありがとんで受け取り'){
     const pd=new Date(value('pickupDate')+'T00:00:00');
     rows.push(['受取希望日', Number.isNaN(pd.getTime()) ? value('pickupDate') : formatPickupDate(pd)],['だいたいの時間', value('pickupTime') || '未指定']);
