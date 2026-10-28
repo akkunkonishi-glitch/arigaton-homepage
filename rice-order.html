@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>お米のご注文｜ありがとん</title>
+<style>
+:root{--bg:#fbf7ef;--card:#fffdf9;--ink:#40372f;--muted:#766d64;--line:#e3d8ca;--green:#32701f;--green2:#285e20;--soft:#eef5ea;--warn:#8b4a16}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic",sans-serif}
+body{line-height:1.6}
+.wrap{max-width:760px;margin:0 auto;padding:18px 14px 56px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.brand{font-weight:800;font-size:19px}
+.back{color:var(--green2);text-decoration:none;font-weight:700}
+.hero{padding:24px 20px;background:#fff;border:1px solid var(--line);border-radius:18px;margin-bottom:14px}
+.hero h1{margin:0 0 8px;font-size:clamp(26px,7vw,38px);line-height:1.25}
+.hero p{margin:0;color:var(--muted)}
+.notice{margin-top:14px;padding:11px 13px;border-radius:10px;background:#fff4e8;color:var(--warn);font-size:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:14px}
+.card h2{font-size:20px;margin:0 0 16px}
+.field{margin:0 0 16px}
+label,.label{display:block;font-weight:700;margin-bottom:6px}
+.required{font-size:12px;color:#a33;margin-left:6px}
+input,textarea,select{width:100%;font:inherit;color:var(--ink);background:#fff;border:1px solid #cfc4b6;border-radius:11px;padding:12px 13px;min-height:48px}
+textarea{min-height:100px;resize:vertical}
+input:focus,textarea:focus,select:focus,button:focus-visible,a:focus-visible{outline:3px solid #94bd82;outline-offset:2px}
+.methods{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.method{position:relative}
+.method input{position:absolute;opacity:0;pointer-events:none}
+.method label{height:100%;min-height:96px;padding:14px 10px;border:2px solid var(--line);border-radius:14px;background:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer;font-weight:800}
+.method small{font-weight:500;color:var(--muted);margin-top:4px}
+.method input:checked+label{border-color:var(--green);background:var(--soft);color:var(--green2)}
+.delivery-box{display:none;margin-top:18px;padding-top:18px;border-top:1px dashed var(--line)}
+.delivery-box.active{display:block}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inherit;font-weight:800;cursor:pointer}
+.primary{background:var(--green);color:#fff;flex:1}
+.secondary{background:#fff;color:var(--ink);border:1px solid #cfc4b6}
+.primary:disabled{opacity:.55;cursor:not-allowed}
+.summary{display:none}
+.summary.active{display:block}
+.summary dl{margin:0}
+.summary-row{display:grid;grid-template-columns:125px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #eee4d8}
+.summary dt{font-weight:800}
+.summary dd{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.done{display:none;text-align:center;padding:34px 18px}
+.done.active{display:block}
+.done .mark{width:64px;height:64px;border-radius:50%;background:var(--soft);color:var(--green);display:grid;place-items:center;font-size:34px;font-weight:900;margin:0 auto 14px}
+.helper{font-size:13px;color:var(--muted);margin-top:5px}
+.hp{position:absolute;left:-9999px}
+@media(max-width:580px){
+ .methods{grid-template-columns:1fr}
+ .method label{min-height:72px;align-items:flex-start;text-align:left}
+ .summary-row{grid-template-columns:1fr;gap:2px}
+ .actions{flex-direction:column-reverse}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="topbar">
+    <div class="brand">ありがとん</div>
+    <a class="back" href="./">← ホームへ戻る</a>
+  </div>
+
+  <section class="hero">
+    <h1>お米のご注文</h1>
+    <p>安曇野産コシヒカリのご注文内容と、受け取り方法を入力してください。</p>
+    <div class="notice"><strong>現在は試作版です。</strong> このページでは入力・確認の流れを試せますが、まだ実際の注文送信は行われません。</div>
+  </section>
+
+  <form id="orderForm" novalidate>
+    <section class="card">
+      <h2>1. ご注文内容</h2>
+      <div class="field">
+        <label for="customerName">お名前<span class="required">必須</span></label>
+        <input id="customerName" name="customerName" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="phone">電話番号<span class="required">必須</span></label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required>
+      </div>
+      <div class="field">
+        <label for="email">メールアドレス</label>
+        <input id="email" name="email" type="email" autocomplete="email">
+        <div class="helper">確認メール機能を付ける場合に使います。今は任意です。</div>
+      </div>
+      <div class="field">
+        <label for="orderDetail">数量・ご希望<span class="required">必須</span></label>
+        <textarea id="orderDetail" name="orderDetail" required placeholder="例：30kgを2袋。1袋は精米希望。"></textarea>
+        <div class="helper">価格や袋サイズが確定したら、後から選択式に変更できます。</div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. 受け取り方法</h2>
+      <div class="methods" role="radiogroup" aria-label="受け取り方法">
+        <div class="method">
+          <input id="methodSagawa" type="radio" name="method" value="佐川急便（代引き）" required>
+          <label for="methodSagawa">佐川急便<small>代引きで発送</small></label>
+        </div>
+        <div class="method">
+          <input id="methodPickup" type="radio" name="method" value="ありがとんで受け取り">
+          <label for="methodPickup">取りに行く<small>ありがとんで受け取り</small></label>
+        </div>
+        <div class="method">
+          <input id="methodDelivery" type="radio" name="method" value="ありがとんから配達">
+          <label for="methodDelivery">配達してもらう<small>ありがとんからお届け</small></label>
+        </div>
+      </div>
+
+      <div id="sagawaFields" class="delivery-box">
+        <div class="field">
+          <label for="postal">郵便番号<span class="required">必須</span></label>
+          <input id="postal" name="postal" autocomplete="postal-code" inputmode="numeric" placeholder="399-0000">
+        </div>
+        <div class="field">
+          <label for="shippingAddress">お届け先住所<span class="required">必須</span></label>
+          <textarea id="shippingAddress" name="shippingAddress" autocomplete="street-address"></textarea>
+        </div>
+        <div class="field">
+          <label for="shippingRequest">配達の希望</label>
+          <input id="shippingRequest" name="shippingRequest" placeholder="例：平日夕方希望、指定なし など">
+        </div>
+      </div>
+
+      <div id="pickupFields" class="delivery-box">
+        <div class="field">
+          <label for="pickupDate">受取希望日<span class="required">必須</span></label>
+          <input id="pickupDate" name="pickupDate" type="date">
+        </div>
+        <div class="field">
+          <label for="pickupTime">だいたいの時間</label>
+          <input id="pickupTime" name="pickupTime" placeholder="例：午前中、15時ごろ">
+        </div>
+      </div>
+
+      <div id="deliveryFields" class="delivery-box">
+        <div class="field">
+          <label for="deliveryAddress">配達先住所<span class="required">必須</span></label>
+          <textarea id="deliveryAddress" name="deliveryAddress" autocomplete="street-address"></textarea>
+        </div>
+        <div class="field">
+          <label for="deliveryDate">配達希望日</label>
+          <input id="deliveryDate" name="deliveryDate" type="date">
+        </div>
+        <div class="field">
+          <label for="deliveryRequest">配達時の希望</label>
+          <input id="deliveryRequest" name="deliveryRequest" placeholder="例：来る前に電話してください">
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:18px">
+        <label for="note">その他・備考</label>
+        <textarea id="note" name="note" placeholder="領収書、連絡事項などがあれば入力してください。"></textarea>
+      </div>
+      <div class="hp" aria-hidden="true">
+        <label for="website">Website</label><input id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="actions">
+        <button id="confirmBtn" class="primary" type="submit">注文内容を確認する</button>
+      </div>
+    </section>
+  </form>
+
+  <section id="summaryCard" class="card summary" aria-live="polite">
+    <h2>3. 注文内容の確認</h2>
+    <dl id="summaryList"></dl>
+    <div class="actions">
+      <button id="editBtn" class="secondary" type="button">入力内容を直す</button>
+      <button id="finalBtn" class="primary" type="button">この内容で注文する（試作）</button>
+    </div>
+  </section>
+
+  <section id="doneCard" class="card done" aria-live="polite">
+    <div class="mark">✓</div>
+    <h2>入力テスト完了</h2>
+    <p>試作版のため、注文はまだ送信されていません。</p>
+    <p class="helper">次の段階でGoogleスプレッドシートへの記録と、新規注文通知をつなぎます。</p>
+    <div class="actions">
+      <a class="primary" style="display:block;text-decoration:none;text-align:center" href="./">ホームへ戻る</a>
+    </div>
+  </section>
+</main>
+
+<script>
+const form = document.getElementById('orderForm');
+const summaryCard = document.getElementById('summaryCard');
+const summaryList = document.getElementById('summaryList');
+const doneCard = document.getElementById('doneCard');
+const finalBtn = document.getElementById('finalBtn');
+const editBtn = document.getElementById('editBtn');
+const boxes = {
+  '佐川急便（代引き）': document.getElementById('sagawaFields'),
+  'ありがとんで受け取り': document.getElementById('pickupFields'),
+  'ありがとんから配達': document.getElementById('deliveryFields')
+};
+
+function selectedMethod(){
+  return form.querySelector('input[name="method"]:checked')?.value || '';
+}
+function setRequired(method){
+  document.getElementById('postal').required = method === '佐川急便（代引き）';
+  document.getElementById('shippingAddress').required = method === '佐川急便（代引き）';
+  document.getElementById('pickupDate').required = method === 'ありがとんで受け取り';
+  document.getElementById('deliveryAddress').required = method === 'ありがとんから配達';
+}
+form.querySelectorAll('input[name="method"]').forEach(radio=>{
+  radio.addEventListener('change',()=>{
+    const method = selectedMethod();
+    Object.entries(boxes).forEach(([key,box])=>box.classList.toggle('active',key===method));
+    setRequired(method);
+  });
+});
+
+function value(id){ return document.getElementById(id)?.value.trim() || ''; }
+function rowsFor(method){
+  const rows = [
+    ['お名前', value('customerName')],
+    ['電話番号', value('phone')],
+    ['メール', value('email') || '未入力'],
+    ['数量・ご希望', value('orderDetail')],
+    ['受け取り方法', method]
+  ];
+  if(method === '佐川急便（代引き）'){
+    rows.push(['郵便番号', value('postal')],['お届け先', value('shippingAddress')],['配達の希望', value('shippingRequest') || 'なし']);
+  }else if(method === 'ありがとんで受け取り'){
+    rows.push(['受取希望日', value('pickupDate')],['だいたいの時間', value('pickupTime') || '未指定']);
+  }else if(method === 'ありがとんから配達'){
+    rows.push(['配達先', value('deliveryAddress')],['配達希望日', value('deliveryDate') || '未指定'],['配達時の希望', value('deliveryRequest') || 'なし']);
+  }
+  rows.push(['備考', value('note') || 'なし']);
+  return rows;
+}
+
+form.addEventListener('submit',event=>{
+  event.preventDefault();
+  if(value('website')) return;
+  const method = selectedMethod();
+  setRequired(method);
+  if(!form.reportValidity()) return;
+  summaryList.innerHTML = rowsFor(method).map(([k,v])=>'<div class="summary-row"><dt>'+escapeHtml(k)+'</dt><dd>'+escapeHtml(v)+'</dd></div>').join('');
+  form.style.display='none';
+  summaryCard.classList.add('active');
+  summaryCard.scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+editBtn.addEventListener('click',()=>{
+  summaryCard.classList.remove('active');
+  form.style.display='';
+  form.scrollIntoView({behavior:'smooth',block:'start'});
+});
+
+let submitted = false;
+finalBtn.addEventListener('click',()=>{
+  if(submitted) return;
+  submitted = true;
+  finalBtn.disabled = true;
+  finalBtn.textContent = '処理中…';
+  const token = 'rice-order-demo-' + Date.now();
+  try{ localStorage.setItem('arigaton_last_demo_order', token); }catch(e){}
+  setTimeout(()=>{
+    summaryCard.classList.remove('active');
+    doneCard.classList.add('active');
+    doneCard.scrollIntoView({behavior:'smooth',block:'start'});
+  },350);
+});
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
+}
+</script>
+</body>
+</html>
