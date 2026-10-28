@@ -26,7 +26,7 @@ label,.label{display:block;font-weight:700;margin-bottom:6px}
 input,textarea,select{width:100%;font:inherit;color:var(--ink);background:#fff;border:1px solid #cfc4b6;border-radius:11px;padding:12px 13px;min-height:48px}
 textarea{min-height:100px;resize:vertical}
 input:focus,textarea:focus,select:focus,button:focus-visible,a:focus-visible{outline:3px solid #94bd82;outline-offset:2px}
-.methods{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.methods{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
 .method{position:relative}
 .method input{position:absolute;opacity:0;pointer-events:none}
 .method label{height:100%;min-height:96px;padding:14px 10px;border:2px solid var(--line);border-radius:14px;background:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;cursor:pointer;font-weight:800}
@@ -122,10 +122,6 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
           <input id="methodPickup" type="radio" name="method" value="ありがとんで受け取り">
           <label for="methodPickup">取りに行く<small>ありがとんで受け取り</small></label>
         </div>
-        <div class="method">
-          <input id="methodDelivery" type="radio" name="method" value="ありがとんから配達">
-          <label for="methodDelivery">配達してもらう<small>ありがとんからお届け</small></label>
-        </div>
       </div>
 
       <div id="sagawaFields" class="delivery-box">
@@ -154,20 +150,6 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
         </div>
       </div>
 
-      <div id="deliveryFields" class="delivery-box">
-        <div class="field">
-          <label for="deliveryAddress">配達先住所<span class="required">必須</span></label>
-          <textarea id="deliveryAddress" name="deliveryAddress" autocomplete="street-address"></textarea>
-        </div>
-        <div class="field">
-          <label for="deliveryDate">配達希望日</label>
-          <input id="deliveryDate" name="deliveryDate" type="date">
-        </div>
-        <div class="field">
-          <label for="deliveryRequest">配達時の希望</label>
-          <input id="deliveryRequest" name="deliveryRequest" placeholder="例：来る前に電話してください">
-        </div>
-      </div>
 
       <div class="field" style="margin-top:18px">
         <label for="note">その他・備考</label>
@@ -212,8 +194,7 @@ const finalBtn = document.getElementById('finalBtn');
 const editBtn = document.getElementById('editBtn');
 const boxes = {
   '佐川急便（代引き）': document.getElementById('sagawaFields'),
-  'ありがとんで受け取り': document.getElementById('pickupFields'),
-  'ありがとんから配達': document.getElementById('deliveryFields')
+  'ありがとんで受け取り': document.getElementById('pickupFields')
 };
 
 function selectedMethod(){
@@ -223,7 +204,6 @@ function setRequired(method){
   document.getElementById('postal').required = method === '佐川急便（代引き）';
   document.getElementById('shippingAddress').required = method === '佐川急便（代引き）';
   document.getElementById('pickupDate').required = method === 'ありがとんで受け取り';
-  document.getElementById('deliveryAddress').required = method === 'ありがとんから配達';
 }
 form.querySelectorAll('input[name="method"]').forEach(radio=>{
   radio.addEventListener('change',()=>{
@@ -289,8 +269,6 @@ function rowsFor(method){
     rows.push(['郵便番号', value('postal')],['お届け先', value('shippingAddress')],['配達の希望', value('shippingRequest') || 'なし']);
   }else if(method === 'ありがとんで受け取り'){
     rows.push(['受取希望日', value('pickupDate')],['だいたいの時間', value('pickupTime') || '未指定']);
-  }else if(method === 'ありがとんから配達'){
-    rows.push(['配達先', value('deliveryAddress')],['配達希望日', value('deliveryDate') || '未指定'],['配達時の希望', value('deliveryRequest') || 'なし']);
   }
   rows.push(['備考', value('note') || 'なし']);
   return rows;
