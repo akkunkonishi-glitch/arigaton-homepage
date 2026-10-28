@@ -127,9 +127,22 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
 
       <div id="sagawaFields" class="delivery-box">
         <div class="field">
-          <label for="deliveryPreferredDate">お届け希望日</label>
-          <input id="deliveryPreferredDate" name="deliveryPreferredDate" type="date">
-          <div class="helper">お届け希望日は、注文日の7日後以降から選べます。ご希望日に合わせて、直前の火曜・木曜を目安に発送します。地域や交通・天候などにより、ご希望日に沿えない場合があります。</div>
+          <div class="label">お届け希望日<span class="required">必須</span></div>
+          <input id="deliveryPreferredDate" name="deliveryPreferredDate" type="hidden">
+          <div id="sagawaCalendar" class="pickup-calendar" aria-label="佐川お届け希望日カレンダー">
+            <div class="calendar-head">
+              <button id="sagawaCalendarPrev" type="button" aria-label="前の月">‹</button>
+              <div id="sagawaCalendarTitle" class="calendar-title"></div>
+              <button id="sagawaCalendarNext" type="button" aria-label="次の月">›</button>
+            </div>
+            <div class="calendar-week" aria-hidden="true">
+              <div>日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div>土</div>
+            </div>
+            <div id="sagawaCalendarGrid" class="calendar-grid"></div>
+            <div id="sagawaCalendarSelected" class="calendar-selected">注文日の7日後以降から選んでください</div>
+            <div id="sagawaDateError" class="calendar-error">お届け希望日を選んでください。</div>
+          </div>
+          <div class="helper">注文日の7日後より前は選択できません。ご希望日に合わせて、直前の火曜・木曜を目安に発送します。</div>
         </div>
         <div class="field">
           <label for="shippingRequest">希望時間帯</label>
@@ -255,7 +268,7 @@ function selectedMethod(){
 function setRequired(method){
   document.getElementById('postal').required = true;
   document.getElementById('shippingAddress').required = true;
-  document.getElementById('deliveryPreferredDate').required = method === '佐川急便（代引き）';
+  if(method !== '佐川急便（代引き）') sagawaDateError.classList.remove('active');
   if(method !== 'ありがとんで受け取り') pickupDateError.classList.remove('active');
 }
 form.querySelectorAll('input[name="method"]').forEach(radio=>{
@@ -269,18 +282,7 @@ form.querySelectorAll('input[name="method"]').forEach(radio=>{
 document.getElementById('riceType').addEventListener('change',updatePricePreview);
 document.getElementById('bagCount').addEventListener('change',updatePricePreview);
 
-function setSagawaDeliveryDateLimit(){
-  const input=document.getElementById('deliveryPreferredDate');
-  if(!input) return;
-  const minDate=new Date();
-  minDate.setHours(0,0,0,0);
-  minDate.setDate(minDate.getDate()+7);
-  const y=minDate.getFullYear();
-  const m=String(minDate.getMonth()+1).padStart(2,'0');
-  const d=String(minDate.getDate()).padStart(2,'0');
-  input.min=y+'-'+m+'-'+d;
-}
-setSagawaDeliveryDateLimit();
+
 
 const pickupDateInput=document.getElementById('pickupDate');
 const pickupCalendarGrid=document.getElementById('calendarGrid');
@@ -301,6 +303,77 @@ function formatPickupDate(date){
   const names=['日','月','火','水','木','金','土'];
   return (date.getMonth()+1)+'月'+date.getDate()+'日（'+names[date.getDay()]+'）';
 }
+
+const sagawaDateInput=document.getElementById('deliveryPreferredDate');
+const sagawaCalendarGrid=document.getElementById('sagawaCalendarGrid');
+const sagawaCalendarTitle=document.getElementById('sagawaCalendarTitle');
+const sagawaCalendarSelected=document.getElementById('sagawaCalendarSelected');
+const sagawaDateError=document.getElementById('sagawaDateError');
+const sagawaMinDate=new Date();
+sagawaMinDate.setHours(0,0,0,0);
+sagawaMinDate.setDate(sagawaMinDate.getDate()+7);
+let sagawaCalendarCursor=new Date(sagawaMinDate.getFullYear(),sagawaMinDate.getMonth(),1);
+
+function renderSagawaCalendar(){
+  const year=sagawaCalendarCursor.getFullYear();
+  const month=sagawaCalendarCursor.getMonth();
+  sagawaCalendarTitle.textContent=year+'年 '+(month+1)+'月';
+  sagawaCalendarGrid.innerHTML='';
+
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+
+  for(let i=0;i<firstDay;i++){
+    const blank=document.createElement('button');
+    blank.type='button';
+    blank.className='calendar-day empty';
+    blank.tabIndex=-1;
+    sagawaCalendarGrid.appendChild(blank);
+  }
+
+  for(let day=1;day<=daysInMonth;day++){
+    const date=new Date(year,month,day);
+    date.setHours(0,0,0,0);
+    const value=localDateValue(date);
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='calendar-day';
+    btn.textContent=day;
+    btn.setAttribute('aria-label',formatPickupDate(date));
+
+    if(date>=sagawaMinDate){
+      btn.classList.add('available');
+      btn.disabled=false;
+      btn.addEventListener('click',()=>{
+        sagawaDateInput.value=value;
+        sagawaCalendarSelected.textContent='選択中：'+formatPickupDate(date);
+        sagawaDateError.classList.remove('active');
+        renderSagawaCalendar();
+      });
+    }else{
+      btn.disabled=true;
+    }
+
+    if(sagawaDateInput.value===value){
+      btn.classList.add('selected');
+      btn.setAttribute('aria-selected','true');
+    }
+    sagawaCalendarGrid.appendChild(btn);
+  }
+
+  const minMonthStart=new Date(sagawaMinDate.getFullYear(),sagawaMinDate.getMonth(),1);
+  document.getElementById('sagawaCalendarPrev').disabled=
+    year===minMonthStart.getFullYear() && month===minMonthStart.getMonth();
+}
+document.getElementById('sagawaCalendarPrev').addEventListener('click',()=>{
+  sagawaCalendarCursor=new Date(sagawaCalendarCursor.getFullYear(),sagawaCalendarCursor.getMonth()-1,1);
+  renderSagawaCalendar();
+});
+document.getElementById('sagawaCalendarNext').addEventListener('click',()=>{
+  sagawaCalendarCursor=new Date(sagawaCalendarCursor.getFullYear(),sagawaCalendarCursor.getMonth()+1,1);
+  renderSagawaCalendar();
+});
+renderSagawaCalendar();
 function renderPickupCalendar(){
   const year=calendarCursor.getFullYear();
   const month=calendarCursor.getMonth();
@@ -431,6 +504,11 @@ form.addEventListener('submit',event=>{
   if(value('website')) return;
   const method = selectedMethod();
   setRequired(method);
+  if(method === '佐川急便（代引き）' && !value('deliveryPreferredDate')){
+    sagawaDateError.classList.add('active');
+    document.getElementById('sagawaCalendar').scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
   if(method === 'ありがとんで受け取り' && !value('pickupDate')){
     pickupDateError.classList.add('active');
     document.getElementById('pickupCalendar').scrollIntoView({behavior:'smooth',block:'center'});
