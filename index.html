@@ -13,24 +13,52 @@ body{overflow-x:hidden}
 #source{display:none}
 canvas{display:block;width:100%;height:auto}
 .top{position:relative}
-.hotspot{position:absolute;z-index:2;display:block;border-radius:999px}
-.hotspot.meat{left:25.4%;top:88.0%;width:22.3%;height:9.2%}
-.hotspot.rice{left:75.2%;top:88.0%;width:22.0%;height:9.2%}
+.hotspot{position:absolute;z-index:2;display:block;border-radius:6px}
+a{touch-action:manipulation}
+a:focus-visible,button:focus-visible{outline:3px solid #285e20;outline-offset:3px}
+.hotspot:hover{background:rgba(255,255,255,.08)}
+.hotspot.logo{left:3.4%;top:.5%;width:27%;height:13.5%}
+.header-link{top:2.6%;height:7.1%}
+.nav-home{left:39.5%;width:4.9%}
+.nav-meat{left:45.2%;width:6.7%}
+.nav-rice{left:52.5%;width:6.9%}
+.nav-products{left:59.8%;width:6.1%}
+.nav-shops{left:66.1%;width:6.4%}
+.nav-farm{left:73%;width:6.7%}
+.nav-access{left:80.2%;width:5.3%}
+.nav-contact{left:85.9%;width:12.5%;border-radius:999px}
+.hotspot.meat{left:1.5%;top:61.2%;width:47.9%;height:38.5%}
+.hotspot.rice{left:50.6%;top:61.2%;width:47.9%;height:38.5%}
+.mobile-nav{display:none}
 .info{padding:8px 18px 10px}
 .cards{max-width:930px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:start}
 .card{display:block;overflow:hidden;border-radius:4px}
 .diary{padding:8px 18px 0}
 .diary canvas{border-radius:5px}
+.diary-image{position:relative}
+.diary-link{left:0;top:0;width:39%;height:100%}
 .related{margin:12px 18px 10px;padding:11px 14px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 .related-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.08em;margin-right:2px}
 .related a{font-size:12px;color:#5d554e;text-decoration:none;background:#fff;border:1px solid #ddd4ca;border-radius:999px;padding:7px 11px;white-space:nowrap}
-.footer{margin-top:0}
+.footer{margin-top:0;position:relative}
+.footer-email{left:38.2%;top:60%;width:12.3%;height:17%}
+.order-dialog{width:min(440px,calc(100% - 32px));max-height:calc(100dvh - 32px);overflow:auto;border:1px solid var(--line);border-radius:16px;padding:28px;background:var(--bg);color:var(--ink);box-shadow:0 16px 60px #0003}
+.order-dialog::backdrop{background:rgba(35,30,23,.5)}
+.order-dialog h2{margin:0 0 16px;font-size:24px}
+.order-dialog p{line-height:1.8}
+.phone-order{display:block;margin:20px 0;padding:14px 8px;border-radius:999px;background:#32701f;color:#fff;text-align:center;text-decoration:none;font-size:clamp(18px,5vw,23px);font-weight:700}
+.rice-info{color:#285e20;text-underline-offset:3px}
+.order-dialog form{margin-top:24px;text-align:right}
+.order-dialog button{min-height:44px;padding:8px 20px;border:1px solid #c8bfb2;border-radius:999px;background:#fff;color:var(--ink);font:inherit;cursor:pointer}
 @media(max-width:900px){
   .info,.diary{padding-left:12px;padding-right:12px}
   .related{margin-left:12px;margin-right:12px}
   .cards{gap:7px}
 }
 @media(max-width:620px){
+  .header-link{display:none}
+  .mobile-nav{display:flex;gap:6px;flex-wrap:wrap;padding:10px 12px}
+  .mobile-nav a{display:flex;align-items:center;justify-content:center;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);text-decoration:none;font-size:13px}
   .cards{grid-template-columns:repeat(2,1fr);max-width:100%}
   .card:last-child{grid-column:1/-1;width:50%;justify-self:center}
 }
@@ -42,36 +70,83 @@ canvas{display:block;width:100%;height:auto}
 
   <section class="top" aria-label="ありがとん トップ">
     <canvas id="topCanvas" width="1312" height="680"></canvas>
-    <a class="hotspot meat" href="#" aria-label="お肉の注文へ"></a>
-    <a class="hotspot rice" href="#" aria-label="お米の注文へ"></a>
+    <a class="hotspot logo" href="./" aria-label="ありがとん ホーム"></a>
+    <nav aria-label="メインメニュー">
+      <a class="hotspot header-link nav-home" href="./" aria-label="ホーム"></a>
+      <a class="hotspot header-link nav-meat" href="https://arigaton.d.dooo.jp/nikunotyuumon.html" aria-label="お肉の注文"></a>
+      <a class="hotspot header-link nav-rice" href="tel:09044604849" data-rice-order aria-haspopup="dialog" aria-controls="riceOrder" aria-label="お米の電話注文"></a>
+      <a class="hotspot header-link nav-products" href="https://arigaton.d.dooo.jp/nikunotyuumon.html" aria-label="商品紹介"></a>
+      <a class="hotspot header-link nav-shops" href="https://arigaton.d.dooo.jp/" aria-label="お店の紹介 公式サイトへ" title="公式サイトのお店紹介をご覧ください"></a>
+      <a class="hotspot header-link nav-farm" href="https://arigaton.d.dooo.jp/" aria-label="牧場のこと"></a>
+      <a class="hotspot header-link nav-access" href="https://www.google.com/maps/search/?api=1&amp;query=長野県安曇野市三郷温1328" aria-label="アクセス"></a>
+      <a class="hotspot header-link nav-contact" href="mailto:arigaton@nifty.com" aria-label="お問い合わせ メールを作成"></a>
+    </nav>
+    <a class="hotspot meat" href="https://arigaton.d.dooo.jp/nikunotyuumon.html" aria-label="お肉の注文へ" title="お肉のご注文方法・注文フォームへ"></a>
+    <a class="hotspot rice" href="tel:09044604849" data-rice-order aria-haspopup="dialog" aria-controls="riceOrder" aria-label="お米の電話注文へ" title="お米のご注文はお電話で 090-4460-4849"></a>
   </section>
+
+  <nav class="mobile-nav" aria-label="スマートフォン用メニュー">
+    <a href="https://arigaton.d.dooo.jp/nikunotyuumon.html">お肉の注文</a>
+    <a href="tel:09044604849" data-rice-order aria-haspopup="dialog" aria-controls="riceOrder">お米の注文</a>
+    <a href="https://arigaton.d.dooo.jp/nikunotyuumon.html">商品紹介</a>
+    <a href="https://arigaton.d.dooo.jp/">お店の紹介</a>
+    <a href="https://arigaton.d.dooo.jp/">牧場のこと</a>
+    <a href="https://www.google.com/maps/search/?api=1&amp;query=長野県安曇野市三郷温1328">アクセス</a>
+    <a href="mailto:arigaton@nifty.com">お問い合わせ</a>
+  </nav>
 
   <section class="info" aria-label="ありがとんについて">
     <div class="cards">
-      <a class="card" href="#" aria-label="牧場のこと"><canvas id="card1" width="172" height="227"></canvas></a>
-      <a class="card" href="#" aria-label="豚肉商品の紹介"><canvas id="card2" width="172" height="227"></canvas></a>
-      <a class="card" href="#" aria-label="お店の紹介"><canvas id="card3" width="172" height="227"></canvas></a>
-      <a class="card" href="#" aria-label="アクセス"><canvas id="card4" width="172" height="227"></canvas></a>
-      <a class="card" href="#" aria-label="堆肥の販売"><canvas id="card5" width="172" height="227"></canvas></a>
+      <a class="card" href="https://arigaton.d.dooo.jp/" aria-label="牧場のこと"><canvas id="card1" width="172" height="227"></canvas></a>
+      <a class="card" href="https://arigaton.d.dooo.jp/nikunotyuumon.html" aria-label="豚肉商品の紹介"><canvas id="card2" width="172" height="227"></canvas></a>
+      <a class="card" href="https://arigaton.d.dooo.jp/" aria-label="お店の紹介"><canvas id="card3" width="172" height="227"></canvas></a>
+      <a class="card" href="https://www.google.com/maps/search/?api=1&amp;query=長野県安曇野市三郷温1328" aria-label="アクセス"><canvas id="card4" width="172" height="227"></canvas></a>
+      <a class="card" href="https://arigaton.d.dooo.jp/taihinohanbai.html" aria-label="堆肥の販売"><canvas id="card5" width="172" height="227"></canvas></a>
     </div>
   </section>
 
   <section class="diary" aria-label="ありがとん日記と安曇野の風景">
+    <div class="diary-image">
     <canvas id="diaryCanvas" width="1276" height="134"></canvas>
+    <a class="hotspot diary-link" href="http://blog.livedoor.jp/arigato2370/" aria-label="ありがとん日記を読む"></a>
+    </div>
   </section>
 
   <section class="related" aria-label="関連事業">
     <span class="related-title">関連事業</span>
-    <a href="#">ゴルフ練習場 西穂高グリーンスポット</a>
-    <a href="#">整体処 ぴんころ道場</a>
+    <a href="https://www.google.com/maps/search/?api=1&amp;query=西穂高グリーンスポット+安曇野市穂高牧2348">ゴルフ練習場 西穂高グリーンスポット</a>
+    <a href="https://www.google.com/maps/search/?api=1&amp;query=整体処ぴんころ道場+安曇野市穂高牧2348">整体処 ぴんころ道場</a>
   </section>
 
   <footer class="footer">
     <canvas id="footerCanvas" width="1312" height="147"></canvas>
+    <a class="hotspot footer-email" href="mailto:arigaton@nifty.com" aria-label="メールでお問い合わせ arigaton@nifty.com"></a>
   </footer>
 </main>
 
+<dialog id="riceOrder" class="order-dialog" aria-labelledby="riceOrderTitle" aria-describedby="riceOrderDescription">
+  <h2 id="riceOrderTitle">お米のご注文</h2>
+  <p id="riceOrderDescription">お米のご注文は、お電話で承っています。ご希望の数量や受け取り方法などをお伝えください。</p>
+  <a class="phone-order" href="tel:09044604849">電話する 090-4460-4849</a>
+  <p>価格・在庫・お届けについても、お電話でご確認ください。</p>
+  <a class="rice-info" href="https://arigaton.d.dooo.jp/">これまでの公式サイトを見る</a>
+  <form method="dialog"><button type="submit">閉じる</button></form>
+</dialog>
+
 <script>
+const riceOrder = document.getElementById('riceOrder');
+document.querySelectorAll('[data-rice-order]').forEach(link => {
+  link.addEventListener('click', event => {
+    if (typeof riceOrder.showModal !== 'function' || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    if (!riceOrder.open) riceOrder.showModal();
+  });
+});
+riceOrder.addEventListener('click', event => {
+  if (event.target !== riceOrder) return;
+  const bounds = riceOrder.getBoundingClientRect();
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) riceOrder.close();
+});
 const source = document.getElementById('source');
 function crop(id,x,y,w,h){
   const c=document.getElementById(id);
