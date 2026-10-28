@@ -125,9 +125,16 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
         </div>
       </div>
 
-      <div id="pricePreview" class="notice" style="display:none"></div>
-
       <div id="sagawaFields" class="delivery-box">
+        <div class="field">
+          <label for="deliveryPreferredDate">お届け希望日</label>
+          <input id="deliveryPreferredDate" name="deliveryPreferredDate" type="date">
+          <div class="helper">ご希望日に合わせて、直前の火曜・木曜を目安に発送します。地域や交通・天候などにより、ご希望日に沿えない場合があります。</div>
+        </div>
+        <div class="field">
+          <label for="shippingRequest">配達の希望</label>
+          <input id="shippingRequest" name="shippingRequest" placeholder="例：時間指定なし、午前中希望 など">
+        </div>
         <div class="field">
           <label for="postal">郵便番号<span class="required">必須</span></label>
           <input id="postal" name="postal" autocomplete="postal-code" inputmode="numeric" placeholder="399-0000">
@@ -135,15 +142,6 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
         <div class="field">
           <label for="shippingAddress">お届け先住所<span class="required">必須</span></label>
           <textarea id="shippingAddress" name="shippingAddress" autocomplete="street-address"></textarea>
-        </div>
-        <div class="field">
-          <label for="deliveryPreferredDate">お届け希望日</label>
-          <input id="deliveryPreferredDate" name="deliveryPreferredDate" type="date">
-          <div class="helper">発送は原則、火曜・木曜を予定しています。地域や集荷時間、交通・天候などにより、ご希望日に沿えない場合があります。</div>
-        </div>
-        <div class="field">
-          <label for="shippingRequest">配達の希望</label>
-          <input id="shippingRequest" name="shippingRequest" placeholder="例：時間指定なし、午前中希望 など">
         </div>
       </div>
 
@@ -171,6 +169,9 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
           <input id="pickupTime" name="pickupTime" placeholder="例：午前中、15時ごろ">
         </div>
       </div>
+
+      <div id="pricePreview" class="notice" style="display:none"></div>
+
 
     </section>
 
