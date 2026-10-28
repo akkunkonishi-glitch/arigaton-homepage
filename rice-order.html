@@ -73,20 +73,7 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
 
   <form id="orderForm" novalidate>
     <section class="card">
-      <h2>1. ご注文内容</h2>
-      <div class="field">
-        <label for="customerName">お名前<span class="required">必須</span></label>
-        <input id="customerName" name="customerName" autocomplete="name" required>
-      </div>
-      <div class="field">
-        <label for="phone">電話番号<span class="required">必須</span></label>
-        <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required>
-      </div>
-      <div class="field">
-        <label for="email">メールアドレス</label>
-        <input id="email" name="email" type="email" autocomplete="email">
-        <div class="helper">確認メール機能を付ける場合に使います。今は任意です。</div>
-      </div>
+      <h2>1. お米を選ぶ</h2>
       <div class="field">
         <label for="riceType">お米の種類<span class="required">必須</span></label>
         <select id="riceType" name="riceType" required>
@@ -97,8 +84,9 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
           <option value="もみ" data-price="9000">もみ 30kg｜9,000円（税込）</option>
         </select>
       </div>
+
       <div class="field">
-        <label for="bagCount">30kgの数量<span class="required">必須</span></label>
+        <label for="bagCount">数量<span class="required">必須</span></label>
         <select id="bagCount" name="bagCount" required>
           <option value="1">1袋（30kg）</option>
           <option value="2">2袋（60kg）</option>
@@ -108,21 +96,22 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
         </select>
         <div class="helper">現在は30kg単位での注文受付です。6袋以上はお問い合わせください。</div>
       </div>
-      <div id="pricePreview" class="notice" style="display:none"></div>
-    </section>
 
-    <section class="card">
-      <h2>2. 受け取り方法</h2>
-      <div class="methods" role="radiogroup" aria-label="受け取り方法">
-        <div class="method">
-          <input id="methodSagawa" type="radio" name="method" value="佐川急便（代引き）" required>
-          <label for="methodSagawa">佐川急便<small>代引きで発送</small></label>
-        </div>
-        <div class="method">
-          <input id="methodPickup" type="radio" name="method" value="ありがとんで受け取り">
-          <label for="methodPickup">取りに行く<small>ありがとんで受け取り</small></label>
+      <div class="field">
+        <div class="label">受け取り方法<span class="required">必須</span></div>
+        <div class="methods" role="radiogroup" aria-label="受け取り方法">
+          <div class="method">
+            <input id="methodSagawa" type="radio" name="method" value="佐川急便（代引き）" required>
+            <label for="methodSagawa">佐川急便<small>代引きで発送</small></label>
+          </div>
+          <div class="method">
+            <input id="methodPickup" type="radio" name="method" value="ありがとんで受け取り">
+            <label for="methodPickup">取りに行く<small>ありがとんで受け取り</small></label>
+          </div>
         </div>
       </div>
+
+      <div id="pricePreview" class="notice" style="display:none"></div>
 
       <div id="sagawaFields" class="delivery-box">
         <div class="field">
@@ -149,9 +138,24 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
           <input id="pickupTime" name="pickupTime" placeholder="例：午前中、15時ごろ">
         </div>
       </div>
+    </section>
 
-
-      <div class="field" style="margin-top:18px">
+    <section class="card">
+      <h2>2. お客様情報</h2>
+      <div class="field">
+        <label for="customerName">お名前<span class="required">必須</span></label>
+        <input id="customerName" name="customerName" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="phone">電話番号<span class="required">必須</span></label>
+        <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required>
+      </div>
+      <div class="field">
+        <label for="email">メールアドレス</label>
+        <input id="email" name="email" type="email" autocomplete="email">
+        <div class="helper">確認メール機能を付ける場合に使います。今は任意です。</div>
+      </div>
+      <div class="field">
         <label for="note">その他・備考</label>
         <textarea id="note" name="note" placeholder="領収書、連絡事項などがあれば入力してください。"></textarea>
       </div>
