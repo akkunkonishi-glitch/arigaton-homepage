@@ -140,8 +140,13 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
           <textarea id="shippingAddress" name="shippingAddress" autocomplete="street-address"></textarea>
         </div>
         <div class="field">
+          <label for="deliveryPreferredDate">お届け希望日</label>
+          <input id="deliveryPreferredDate" name="deliveryPreferredDate" type="date">
+          <div class="helper">発送は原則、火曜・木曜を予定しています。地域や集荷時間、交通・天候などにより、ご希望日に沿えない場合があります。</div>
+        </div>
+        <div class="field">
           <label for="shippingRequest">配達の希望</label>
-          <input id="shippingRequest" name="shippingRequest" placeholder="例：平日夕方希望、指定なし など">
+          <input id="shippingRequest" name="shippingRequest" placeholder="例：時間指定なし、午前中希望 など">
         </div>
       </div>
 
@@ -270,7 +275,7 @@ function rowsFor(method){
     rows.push(['お支払い目安', fee===null ? yen(total)+'＋代引き手数料＋送料' : yen(total+fee)+'＋送料']);
   }
   if(method === '佐川急便（代引き）'){
-    rows.push(['郵便番号', value('postal')],['お届け先', value('shippingAddress')],['配達の希望', value('shippingRequest') || 'なし']);
+    rows.push(['郵便番号', value('postal')],['お届け先', value('shippingAddress')],['お届け希望日', value('deliveryPreferredDate') || '指定なし'],['配達の希望', value('shippingRequest') || 'なし']);
   }else if(method === 'ありがとんで受け取り'){
     rows.push(['受取希望日', value('pickupDate')],['だいたいの時間', value('pickupTime') || '未指定']);
   }
