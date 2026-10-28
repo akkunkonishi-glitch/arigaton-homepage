@@ -144,14 +144,6 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
             <option value="19〜21時">19〜21時</option>
           </select>
         </div>
-        <div class="field">
-          <label for="postal">郵便番号<span class="required">必須</span></label>
-          <input id="postal" name="postal" autocomplete="postal-code" inputmode="numeric" placeholder="399-0000">
-        </div>
-        <div class="field">
-          <label for="shippingAddress">お届け先住所<span class="required">必須</span></label>
-          <textarea id="shippingAddress" name="shippingAddress" autocomplete="street-address"></textarea>
-        </div>
       </div>
 
       <div id="pickupFields" class="delivery-box">
@@ -199,6 +191,17 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
         <input id="email" name="email" type="email" autocomplete="email">
         <div class="helper">確認メール機能を付ける場合に使います。今は任意です。</div>
       </div>
+      <div id="sagawaAddressFields" class="delivery-box">
+        <div class="field">
+          <label for="postal">郵便番号<span class="required">必須</span></label>
+          <input id="postal" name="postal" autocomplete="postal-code" inputmode="numeric" placeholder="399-0000">
+        </div>
+        <div class="field">
+          <label for="shippingAddress">住所<span class="required">必須</span></label>
+          <textarea id="shippingAddress" name="shippingAddress" autocomplete="street-address"></textarea>
+        </div>
+      </div>
+
       <div class="field">
         <label for="note">その他・備考</label>
         <textarea id="note" name="note" placeholder="領収書、連絡事項などがあれば入力してください。"></textarea>
@@ -244,6 +247,7 @@ const boxes = {
   '佐川急便（代引き）': document.getElementById('sagawaFields'),
   'ありがとんで受け取り': document.getElementById('pickupFields')
 };
+const sagawaAddressFields = document.getElementById('sagawaAddressFields');
 
 function selectedMethod(){
   return form.querySelector('input[name="method"]:checked')?.value || '';
@@ -257,6 +261,7 @@ form.querySelectorAll('input[name="method"]').forEach(radio=>{
   radio.addEventListener('change',()=>{
     const method = selectedMethod();
     Object.entries(boxes).forEach(([key,box])=>box.classList.toggle('active',key===method));
+    sagawaAddressFields.classList.toggle('active',method==='佐川急便（代引き）');
     setRequired(method);
     updatePricePreview();
   });
