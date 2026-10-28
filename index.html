@@ -97,11 +97,11 @@ a:focus-visible,button:focus-visible{outline:3px solid #285e20;outline-offset:3p
 
   <section class="info" aria-label="ありがとんについて">
     <div class="cards">
-      <a class="card" href="./farm.html" aria-label="牧場のこと"><canvas id="card1" width="172" height="227"></canvas></a>
-      <a class="card" href="https://arigaton.d.dooo.jp/nikunotyuumon.html" aria-label="豚肉商品の紹介"><canvas id="card2" width="172" height="227"></canvas></a>
-      <a class="card" href="https://arigaton.d.dooo.jp/" aria-label="お店の紹介"><canvas id="card3" width="172" height="227"></canvas></a>
-      <a class="card" href="https://www.google.com/maps/search/?api=1&amp;query=長野県安曇野市三郷温1328" aria-label="アクセス"><canvas id="card4" width="172" height="227"></canvas></a>
-      <a class="card" href="https://arigaton.d.dooo.jp/taihinohanbai.html" aria-label="堆肥の販売"><canvas id="card5" width="172" height="227"></canvas></a>
+      <a class="card" href="./farm.html" aria-label="牧場のこと"><canvas id="card1" width="170" height="218"></canvas></a>
+      <a class="card" href="https://arigaton.d.dooo.jp/nikunotyuumon.html" aria-label="豚肉商品の紹介"><canvas id="card2" width="170" height="218"></canvas></a>
+      <a class="card" href="https://arigaton.d.dooo.jp/" aria-label="お店の紹介"><canvas id="card3" width="170" height="218"></canvas></a>
+      <a class="card" href="https://www.google.com/maps/search/?api=1&amp;query=長野県安曇野市三郷温1328" aria-label="アクセス"><canvas id="card4" width="170" height="218"></canvas></a>
+      <a class="card" href="https://arigaton.d.dooo.jp/taihinohanbai.html" aria-label="堆肥の販売"><canvas id="card5" width="170" height="218"></canvas></a>
     </div>
   </section>
 
@@ -150,17 +150,19 @@ riceOrder.addEventListener('click', event => {
 const source = document.getElementById('source');
 function crop(id,x,y,w,h){
   const c=document.getElementById(id);
+  c.width=w;
+  c.height=h;
   const ctx=c.getContext('2d');
   ctx.clearRect(0,0,w,h);
   ctx.drawImage(source,x,y,w,h,0,0,w,h);
 }
 function render(){
   crop('topCanvas',0,0,1312,680);
-  crop('card1',18,678,172,227);
-  crop('card2',198,678,172,227);
-  crop('card3',378,678,172,227);
-  crop('card4',556,678,172,227);
-  crop('card5',734,678,172,227);
+  crop('card1',24,695,170,218);
+  crop('card2',207,695,170,218);
+  crop('card3',389,695,170,218);
+  crop('card4',571,695,170,218);
+  crop('card5',754,695,170,218);
   crop('diaryCanvas',18,910,1276,134);
   crop('footerCanvas',0,1052,1312,147);
 }
