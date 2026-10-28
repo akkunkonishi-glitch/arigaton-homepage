@@ -191,13 +191,13 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
         <input id="email" name="email" type="email" autocomplete="email">
         <div class="helper">確認メール機能を付ける場合に使います。今は任意です。</div>
       </div>
-      <div id="sagawaAddressFields" class="delivery-box">
+      <div id="customerAddressFields">
         <div class="field">
           <label for="postal">郵便番号<span class="required">必須</span></label>
           <input id="postal" name="postal" autocomplete="postal-code" inputmode="numeric" placeholder="399-0000">
         </div>
         <div class="field">
-          <label for="shippingAddress">住所<span class="required">必須</span></label>
+          <label for="shippingAddress">ご住所<span class="required">必須</span></label>
           <textarea id="shippingAddress" name="shippingAddress" autocomplete="street-address"></textarea>
         </div>
       </div>
@@ -247,21 +247,20 @@ const boxes = {
   '佐川急便（代引き）': document.getElementById('sagawaFields'),
   'ありがとんで受け取り': document.getElementById('pickupFields')
 };
-const sagawaAddressFields = document.getElementById('sagawaAddressFields');
+
 
 function selectedMethod(){
   return form.querySelector('input[name="method"]:checked')?.value || '';
 }
 function setRequired(method){
-  document.getElementById('postal').required = method === '佐川急便（代引き）';
-  document.getElementById('shippingAddress').required = method === '佐川急便（代引き）';
+  document.getElementById('postal').required = true;
+  document.getElementById('shippingAddress').required = true;
   if(method !== 'ありがとんで受け取り') pickupDateError.classList.remove('active');
 }
 form.querySelectorAll('input[name="method"]').forEach(radio=>{
   radio.addEventListener('change',()=>{
     const method = selectedMethod();
     Object.entries(boxes).forEach(([key,box])=>box.classList.toggle('active',key===method));
-    sagawaAddressFields.classList.toggle('active',method==='佐川急便（代引き）');
     setRequired(method);
     updatePricePreview();
   });
@@ -391,6 +390,8 @@ function rowsFor(method){
     ['お名前', value('customerName')],
     ['電話番号', value('phone')],
     ['メール', value('email') || '未入力'],
+    ['郵便番号', value('postal')],
+    ['ご住所', value('shippingAddress')],
     ['商品', rice.name+' 30kg'],
     ['数量', bagCount()+'袋（'+(bagCount()*30)+'kg）'],
     ['商品代', yen(total)],
@@ -402,7 +403,7 @@ function rowsFor(method){
     rows.push(['お支払い目安', fee===null ? yen(total)+'＋代引き手数料＋送料' : yen(total+fee)+'＋送料']);
   }
   if(method === '佐川急便（代引き）'){
-    rows.push(['郵便番号', value('postal')],['お届け先', value('shippingAddress')],['お届け希望日', value('deliveryPreferredDate') || '指定なし'],['希望時間帯', value('shippingRequest') || '指定なし']);
+    rows.push(['お届け希望日', value('deliveryPreferredDate') || '指定なし'],['希望時間帯', value('shippingRequest') || '指定なし']);
   }else if(method === 'ありがとんで受け取り'){
     const pd=new Date(value('pickupDate')+'T00:00:00');
     rows.push(['受取希望日', Number.isNaN(pd.getTime()) ? value('pickupDate') : formatPickupDate(pd)],['だいたいの時間', value('pickupTime') || '未指定']);
