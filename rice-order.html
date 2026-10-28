@@ -153,7 +153,10 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
       <div id="pickupFields" class="delivery-box">
         <div class="field">
           <label for="pickupDate">受取希望日<span class="required">必須</span></label>
-          <input id="pickupDate" name="pickupDate" type="date">
+          <select id="pickupDate" name="pickupDate">
+            <option value="">火曜・木曜から選んでください</option>
+          </select>
+          <div class="helper">受け取り可能日は原則、火曜・木曜です。</div>
         </div>
         <div class="field">
           <label for="pickupTime">だいたいの時間</label>
@@ -224,6 +227,32 @@ form.querySelectorAll('input[name="method"]').forEach(radio=>{
 });
 document.getElementById('riceType').addEventListener('change',updatePricePreview);
 document.getElementById('bagCount').addEventListener('change',updatePricePreview);
+
+function populatePickupDates(){
+  const select=document.getElementById('pickupDate');
+  if(!select) return;
+  const today=new Date();
+  today.setHours(0,0,0,0);
+  let d=new Date(today);
+  let added=0;
+  while(added<8){
+    d.setDate(d.getDate()+1);
+    const day=d.getDay();
+    if(day===2 || day===4){
+      const yyyy=d.getFullYear();
+      const mm=String(d.getMonth()+1).padStart(2,'0');
+      const dd=String(d.getDate()).padStart(2,'0');
+      const value=yyyy+'-'+mm+'-'+dd;
+      const label=(d.getMonth()+1)+'月'+d.getDate()+'日（'+(day===2?'火':'木')+'）';
+      const option=document.createElement('option');
+      option.value=value;
+      option.textContent=label;
+      select.appendChild(option);
+      added++;
+    }
+  }
+}
+populatePickupDates();
 
 function value(id){ return document.getElementById(id)?.value.trim() || ''; }
 function yen(n){ return Number(n).toLocaleString('ja-JP') + '円'; }
