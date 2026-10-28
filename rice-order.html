@@ -88,10 +88,27 @@ button{border:0;border-radius:999px;min-height:50px;padding:11px 20px;font:inher
         <div class="helper">確認メール機能を付ける場合に使います。今は任意です。</div>
       </div>
       <div class="field">
-        <label for="orderDetail">数量・ご希望<span class="required">必須</span></label>
-        <textarea id="orderDetail" name="orderDetail" required placeholder="例：30kgを2袋。1袋は精米希望。"></textarea>
-        <div class="helper">価格や袋サイズが確定したら、後から選択式に変更できます。</div>
+        <label for="riceType">お米の種類<span class="required">必須</span></label>
+        <select id="riceType" name="riceType" required>
+          <option value="">選んでください</option>
+          <option value="玄米" data-price="16200">玄米 30kg｜16,200円（税込）</option>
+          <option value="中米" data-price="12960">中米 30kg｜12,960円（税込）</option>
+          <option value="白米" data-price="19440">白米 30kg｜19,440円（税込）</option>
+          <option value="もみ" data-price="9000">もみ 30kg｜9,000円（税込）</option>
+        </select>
       </div>
+      <div class="field">
+        <label for="bagCount">30kgの数量<span class="required">必須</span></label>
+        <select id="bagCount" name="bagCount" required>
+          <option value="1">1袋（30kg）</option>
+          <option value="2">2袋（60kg）</option>
+          <option value="3">3袋（90kg）</option>
+          <option value="4">4袋（120kg）</option>
+          <option value="5">5袋（150kg）</option>
+        </select>
+        <div class="helper">現在は30kg単位での注文受付です。6袋以上はお問い合わせください。</div>
+      </div>
+      <div id="pricePreview" class="notice" style="display:none"></div>
     </section>
 
     <section class="card">
@@ -213,18 +230,61 @@ form.querySelectorAll('input[name="method"]').forEach(radio=>{
     const method = selectedMethod();
     Object.entries(boxes).forEach(([key,box])=>box.classList.toggle('active',key===method));
     setRequired(method);
+    updatePricePreview();
   });
 });
+document.getElementById('riceType').addEventListener('change',updatePricePreview);
+document.getElementById('bagCount').addEventListener('change',updatePricePreview);
 
 function value(id){ return document.getElementById(id)?.value.trim() || ''; }
+function yen(n){ return Number(n).toLocaleString('ja-JP') + '円'; }
+function selectedRice(){
+  const select=document.getElementById('riceType');
+  const option=select.options[select.selectedIndex];
+  return {name:option?.value||'', price:Number(option?.dataset?.price||0)};
+}
+function bagCount(){ return Number(document.getElementById('bagCount').value||1); }
+function itemTotal(){
+  const rice=selectedRice();
+  return rice.price*bagCount();
+}
+function codFee(total){
+  if(total<=10000) return 330;
+  if(total<=30000) return 440;
+  if(total<=100000) return 660;
+  return null;
+}
+function updatePricePreview(){
+  const rice=selectedRice();
+  const total=itemTotal();
+  const method=selectedMethod();
+  const el=document.getElementById('pricePreview');
+  if(!rice.name||!total){ el.style.display='none'; return; }
+  let text=rice.name+' 30kg × '+bagCount()+'袋：'+yen(total);
+  if(method==='佐川急便（代引き）'){
+    const fee=codFee(total);
+    text += fee===null ? '／代引き手数料：要確認（商品代10万円超）' : '／代引き手数料：'+yen(fee)+'／合計：'+yen(total+fee)+'＋送料';
+  }
+  el.textContent=text;
+  el.style.display='block';
+}
 function rowsFor(method){
+  const rice=selectedRice();
+  const total=itemTotal();
   const rows = [
     ['お名前', value('customerName')],
     ['電話番号', value('phone')],
     ['メール', value('email') || '未入力'],
-    ['数量・ご希望', value('orderDetail')],
+    ['商品', rice.name+' 30kg'],
+    ['数量', bagCount()+'袋（'+(bagCount()*30)+'kg）'],
+    ['商品代', yen(total)],
     ['受け取り方法', method]
   ];
+  if(method==='佐川急便（代引き）'){
+    const fee=codFee(total);
+    rows.push(['代引き手数料', fee===null ? '要確認' : yen(fee)]);
+    rows.push(['お支払い目安', fee===null ? yen(total)+'＋代引き手数料＋送料' : yen(total+fee)+'＋送料']);
+  }
   if(method === '佐川急便（代引き）'){
     rows.push(['郵便番号', value('postal')],['お届け先', value('shippingAddress')],['配達の希望', value('shippingRequest') || 'なし']);
   }else if(method === 'ありがとんで受け取り'){
